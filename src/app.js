@@ -1,11 +1,12 @@
 const express = require('express');
-
 const app = express();
+const readerRouter = require('./routes/reader')
 
-// we expect to have to parse json from request bodies, 
-// so we need the JSON middleware
 app.use(express.json());
+app.use('/readers', readerRouter)
 
-// we will put our routes and controller functions here
+app.get('/', (req, res) => {
+    res.status(200).json({ result: "Hello World" });
+});
 
 module.exports = app;
