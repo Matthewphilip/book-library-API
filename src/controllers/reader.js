@@ -22,25 +22,24 @@ exports.readAll = async (req, res) => {
 
 
 exports.readById = async (req, res) => {
-    const { readerId } = req.params;
-    const reader = await Reader.findByPk(readerId);
-
-    try {
+    const { id } = req.params;
+    const reader = await Reader.findByPk(id);
+    if(!reader) {
+        res.status(404).json({ error: "The reader could not be found." });
+    } else {
         res.status(200).json(reader);
-    } catch (err) {
-        res.status(404).json(err);
     }
 };
+       
 
 exports.update = async (req, res) => {
     const { readerId } = req.params;
     const updateData = req.body;
     const [ updatedRows ] = await Reader.update(updateData, {where:{ id: readerId } });
     if(!updatedRows) {
-      res.status(404).json({ error: "The reader does not exist" });
+      res.status(404).json({ error: "The reader could not be found." });
     } else {
-      const updatedItem = await Reader.findByPk(readerId);
-      res.status(200).json(updatedItem);
+      res.status(200).json(updatedRows);
     }
 };
 
@@ -48,9 +47,9 @@ exports.destroy = async (req, res) => {
     const { readerId } = req.params;
     const deleteData = await Reader.destroy({ where: { id: readerId } });
     if(deleteData) {
-        res.status(204).send();
+        res.status(204).json(deleteData);
     } else {
-        res.status(404).send({ error: "The reader could not be found" })
+        res.status(404).send({ error: "The reader could not be found." });
     }
 
 };
