@@ -6,7 +6,7 @@ module.exports = (connection, DataTypes) => {
         validate: {
           notEmpty: {
             args: [true],
-            msg: 'Please enter your name'
+            msg: 'Name cannot be empty',
           },
         },
       },

@@ -1,6 +1,6 @@
 const { Reader } = require('../models');
 
-exports.create = async (req, res) => {
+exports.create = (req, res) => {
     const newReader = req.body;
 
     Reader
@@ -9,7 +9,7 @@ exports.create = async (req, res) => {
     .catch((error) => {
         const errorMessages = error.errors.map((e) => e.message);
 
-        return res.status(400).json({errors:errorMessages });
+        return res.status(400).json({ errors: errorMessages });
     });
 };
 
