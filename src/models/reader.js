@@ -3,16 +3,32 @@ module.exports = (connection, DataTypes) => {
       name: {
         type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+          notEmpty: {
+            args: [true],
+            msg: 'Please enter your name'
+          },
+        },
       },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
-        isEmail: true,
+        validate: {
+          isEmail: {
+            args: [true],
+            msg: 'Please use a valid email address',
+          },
+        },
       },
       password: {
         type: DataTypes.STRING,
         allowNull: false,
-        min: 8,
+        validate: {
+          lessThan8Characters(value) {
+            if(value.length < 8)
+              throw new Error('Password needs to be longer than 8 characters');
+          },
+        },
       },
     };
   
