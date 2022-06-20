@@ -29,6 +29,44 @@ describe('/readers', () => {
         expect(newReaderRecord.email).to.equal('future_ms_darcy@gmail.com');
         expect(newReaderRecord.password).to.equal('hello');
       });
+
+      it('errors if name is an empty string', async () => {
+        const response = await (await request(app).post('/readers')).setEncoding({
+          name: "",
+          password: "password",
+          email: "email@domain.com",
+        })
+
+        const newReaderRecord = await Reader.findByPk(body.id, {raw: true});
+
+        expect(resonse.status).to.equal(400);
+        expect(response.body.errors.length).to.equal(1);
+        expect(newReaderRecord.name).to.equal(null);
+
+      })
+
+      it('errors if any of the fields are missing', async() => {
+        const response = await (await request(app).post('/readers')).send({});
+        const newReaderRecord = await Reader.findByPk(response.body.id, {
+          raw: true,
+        });
+
+        expect(response.status).to.equal(400);
+        expect(response.body.errors.length).to.equal(3);
+        expect(newReaderRecord).to.equal(null);
+      })
+
+      it('errors if an email or password are in the wrong format', async() => {
+        const response = await (await request(app).post('/readers')).send({
+          name: "Elizabeth Bennet",
+          email: "future_ms_darcygmail.com",
+          password: "123",
+        });
+
+        expect(response.status).to.equal(400);
+        expect(response.body.errors.length).to.equal(2);
+        expect(newReaderRecord).to.equal(null);
+      })
     });
   });
 
