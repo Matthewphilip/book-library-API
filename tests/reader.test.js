@@ -32,12 +32,12 @@ describe('/readers', () => {
 
       it('errors if name is an empty string', async () => {
         const response = await (await request(app).post('/readers')).setEncoding({
-          name: "",
-          password: "password",
+          name: '',
+          password: "123456789",
           email: "email@domain.com",
         })
 
-        const newReaderRecord = await Reader.findByPk(body.id, {raw: true});
+        const newReaderRecord = await Reader.findByPk(response.body.id, {raw: true});
 
         expect(resonse.status).to.equal(400);
         expect(response.body.errors.length).to.equal(1);
@@ -57,10 +57,14 @@ describe('/readers', () => {
       })
 
       it('errors if an email or password are in the wrong format', async() => {
-        const response = await (await request(app).post('/readers')).send({
+        const response = await request(app).post('/readers').send({
           name: "Elizabeth Bennet",
           email: "future_ms_darcygmail.com",
           password: "123",
+        });
+
+        const newReaderRecord = await Reader.findByPk(response.body.id, {
+          raw: true,
         });
 
         expect(response.status).to.equal(400);
